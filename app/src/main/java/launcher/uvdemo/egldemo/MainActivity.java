@@ -6,51 +6,25 @@ import android.content.pm.ConfigurationInfo;
 import android.opengl.GLSurfaceView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.Window;
-import android.view.WindowManager;
-
-//public class MainActivity extends AppCompatActivity {
-//
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//        Log.d("MainActivity", "Has OpenGLES2: " + (hasGLES20()? "yes" : "no"));
-//    }
-//
-//    private boolean hasGLES20() {
-//        ActivityManager am = (ActivityManager)
-//                getSystemService(Context.ACTIVITY_SERVICE);
-//        ConfigurationInfo info = am.getDeviceConfigurationInfo();
-//        return info.reqGlEsVersion >= 0x20000;
-//    }
-//}
+import android.util.Log;
 
 public class MainActivity extends AppCompatActivity {
 
     private GLSurfaceView mSurfaceView;
-    private GLSurfaceView mGLView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        getWindow().setFlags(
-                WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        Log.d("MainActivity", "Has OpenGLES2: " + (hasGLES20()? "yes" : "no"));
+        setContentView(R.layout.activity_main);
 
-        if (hasGLES20()) {
-            mGLView = new GLSurfaceView(this);
-            mGLView.setEGLContextClientVersion(2);
-            mGLView.setPreserveEGLContextOnPause(true);
-            mGLView.setRenderer(new GLES20Renderer());
-        } else {
-            // Time to get a new phone, OpenGL ES 2.0 not supported.
+        mSurfaceView = (GLSurfaceView)findViewById(R.id.openglView);
+        if (mSurfaceView!= null) {
+            mSurfaceView.setEGLContextClientVersion(2);
+            mSurfaceView.setPreserveEGLContextOnPause(true);
+            mSurfaceView.setRenderer(new MyGLRenderer());
         }
-
-        setContentView(mGLView);
     }
 
     private boolean hasGLES20() {
@@ -62,10 +36,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        /*
-         * The activity must call the GL surface view's
-         * onResume() on activity onResume().
-         */
         if (mSurfaceView != null) {
             mSurfaceView.onResume();
         }
@@ -74,11 +44,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
-
-        /*
-         * The activity must call the GL surface view's
-         * onPause() on activity onPause().
-         */
         if (mSurfaceView != null) {
             mSurfaceView.onPause();
         }
